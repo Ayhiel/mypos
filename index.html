@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point of Sale</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="yelo-icon" id="yelo-icon" onclick="showForm()">
+            <img src="yelo.png" alt="">
+            <h3>Yelo</h3>
+        </div>
+        <form class="yelo-form" id="yelo-form" action="">
+            <div class="input-control">
+                <input id="qty" type="number" placeholder="Quantity">
+            </div>
+            <div class="input-control">
+                <input id="price" type="number" placeholder="Price" onchange="getTotal()">
+            </div>
+            <div class="input-control">
+                <input id="total" type="number" placeholder="Total" readonly>
+            </div>
+            <div class="input-control">
+                <input id="save" class="save" type="button" value="Save">
+            </div>
+            <div class="input-control">
+                <input class="close" type="button" value="Close" onclick="closeForm()">
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="summary-wrapper">
+                <div class="data-summary">
+                    <label for="total-qty">Total Quantity</label>
+                    <p id="total-qty" class="summary">00</p>
+                </div>
+                <div class="data-summary">
+                    <label for="total-summary">Total</label>
+                    <p id="total-summary" class="summary">00.00</p>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
