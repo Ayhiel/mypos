@@ -37,64 +37,58 @@ const totalSummary = document.getElementById('total-summary');
 save.addEventListener('click', () => {
     var qtyValue = form[0].value.trim();
     var priceValue = form[1].value.trim();
+    var totalValue = form[2].value.trim();
 
     if (qtyValue === '' || priceValue === '') {
-        alert('Please input a quantity value');
+        alert('Please input a valid value');
         return;
     }
 
-    let idb = indexedDB.open('posdb', 1);
-    idb.onupgradeneeded = (event) => {
-        let res = event.target.result;
-        res.createObjectStore('data', { autoIncrement: true });
-    };
+    const dbName = "posDB";
 
-    idb.onsuccess = () => {
-        let res = idb.result;
-        let tx = res.transaction('data', 'readwrite');
-        let store = tx.objectStore('data');
-        store.put({
-            qty: form[0].value,
-            price: form[1].value,
-            total: form[2].value
-        }).onsuccess = () => {
+    const request = indexedDB.open(dbName, 1);
+    
+    request.onerror = (event) => {
+        alert('Error opening database');
+    };
+    
+    request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+    
+        // Create object store if it doesn't exist
+        if (!db.objectStoreNames.contains("posData")) {
+            const objectStore = db.createObjectStore("posData", { autoIncrement: true });
+        }
+    };
+    
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+    
+        // Get the input values
+        const qty = document.getElementById('qty').value;
+        const price = document.getElementById('price').value;
+        const total = document.getElementById('total').value;
+        const diff = qty * price; // Calculate total
+    
+        // Start a new transaction
+        const transaction = db.transaction(["posData"], "readwrite");
+    
+        // Access the object store
+        const objectStore = transaction.objectStore("posData");
+    
+        // Add the data to the object store
+        const request = objectStore.add({ qty: qty, price: price, total: diff });
+    
+        request.onsuccess = () => {
             form[0].value = '';
             form[1].value = '';
             form[2].value = '';
+            console.log('Data added successfully');
+        };
+    
+        request.onerror = () => {
+            console.error('Error adding data');
         };
     };
-
-    readData();
+ 
 });
-
-function readData() {
-    let idb = indexedDB.open('posdb', 1);
-    tbody.innerHTML = '';
-    let totalQty = 0;
-    let totalSummary = 0;
-    idb.onsuccess = () => {
-        let res = idb.result;
-        let tx = res.transaction('data', 'readonly');
-        let store = tx.objectStore('data');
-        let cursor = store.openCursor();
-        cursor.onsuccess = () => {
-            let curRes = cursor.result;
-            if (curRes) {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${curRes.value.qty}</td>
-                        <td>${curRes.value.price}</td>
-                        <td>${curRes.value.total}</td>
-                    </tr>`;
-                totalQty += parseFloat(curRes.value.qty);
-                totalSummary += parseFloat(curRes.value.total);
-                curRes.continue();
-            } else {
-                document.getElementById('total-qty').textContent = totalQty;
-                document.getElementById('total-summary').textContent = totalSummary;
-            }
-        };
-    };
-}
-
-readData()
