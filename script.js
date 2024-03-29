@@ -43,26 +43,27 @@ save.addEventListener('click', () => {
         return;
     }
 
-    let idb = indexedDB.open('posdb',1)
-        idb.onupgradeneeded = () => {
-    let res = idb.result;
-        res.createObjectStore('data', {autoIncrement: true})
-    }
-        idb.onsuccess = () => {
-    let res = idb.result;
-    let tx = res.transaction('data', 'readwrite');
-    let store = tx.objectStore('data');
+    let idb = indexedDB.open('posdb', 1);
+    idb.onupgradeneeded = (event) => {
+        let res = event.target.result;
+        res.createObjectStore('data', { autoIncrement: true });
+    };
+
+    idb.onsuccess = () => {
+        let res = idb.result;
+        let tx = res.transaction('data', 'readwrite');
+        let store = tx.objectStore('data');
         store.put({
-            qty:form[0].value,
-            price:form[1].value,
-            total:form[2].value
-        }
-        ).onsuccess = () => {
+            qty: form[0].value,
+            price: form[1].value,
+            total: form[2].value
+        }).onsuccess = () => {
             form[0].value = '';
             form[1].value = '';
             form[2].value = '';
-            };    ;
+        };
     };
+
     readData();
 });
 
@@ -97,4 +98,3 @@ function readData() {
 }
 
 readData()
-
