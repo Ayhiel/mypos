@@ -21,7 +21,7 @@ body {
 
 .yelo-icon {
     color: white;
-    width: 80px;
+    width: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -39,7 +39,7 @@ body {
 
 .feeds-icon {
     color: white;
-    width: 80px;
+    width: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
